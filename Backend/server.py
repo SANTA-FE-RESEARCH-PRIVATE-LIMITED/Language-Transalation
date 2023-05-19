@@ -15,7 +15,7 @@ SCRIPT_LANGUAGES = ["autodetect",*GeneralMap.IndicScripts]
 @app.route('/language_code',methods=['GET'])
 @cross_origin()
 def get_language_code():
-    return GeneralMap.IndicScripts
+    return SCRIPT_LANGUAGES
 
 @app.route('/tranliterate',methods=['POST'])
 @cross_origin()
@@ -27,14 +27,19 @@ def tranliterate():
         to_language=json["to_language"]
         sentence=json["sentence"]
 
+        if from_language not in SCRIPT_LANGUAGES:
+            print("Here")
+            return "Incorrect from_language",400
+        if to_language not in SCRIPT_LANGUAGES:
+            print("Here")
+            return "Incorrect to_language",400
+
         try:
             transliterate_word=transliterate.process(from_language,to_language,sentence)
         except Exception as e:
-            print(e)
-            return "Error in the Language Code, Check the language format in /language_code",400
-    
-        print(transliterate_word)
-        return transliterate_word
+            return e,400
+        
+        return {"translitered":transliterate_word}
     else:
         return "Not a json content",400
 

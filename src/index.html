@@ -1,7 +1,20 @@
 <html>
+<script src="js/Main.js"></script>
+<link rel="stylesheet" href="App.css">
 
 <body>
-    <div id="root"></div>
+    <div id="root">
+        The Language you have provided
+        <select name="from" id="available_languages"></select><br><br>
+        The Language to be converted
+        <select name="to" id="available_languages"></select>
+    </div><br><br>
+    <div class="sentence">
+        <textarea type="text" id="transition_from" class="text_box"></textarea><br><br>
+        <button onclick="triggered(this)">Transliterateee</button><br><br>
+        <textarea type="text" id="transition_to" class="text_box"></textarea>
+
+    </div>
 </body>
 
 </html>
