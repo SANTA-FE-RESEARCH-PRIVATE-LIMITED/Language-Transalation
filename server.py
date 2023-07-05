@@ -16,9 +16,9 @@ SCRIPT_LANGUAGES = ["autodetect",*GeneralMap.IndicScripts]
 @app.route('/language_code',methods=['GET'])
 @cross_origin()
 def get_language_code():
-    return SCRIPT_LANGUAGES
+    return {"accepted_languages":SCRIPT_LANGUAGES}
 
-@app.route('/tranliterate',methods=['POST'])
+@app.route('/transliterate',methods=['POST'])
 @cross_origin()
 def tranliterate():
     content_type = request.headers.get('Content-Type')
@@ -29,18 +29,18 @@ def tranliterate():
         sentence=json_data["sentence"]
 
         if from_language not in SCRIPT_LANGUAGES:
-            return "Incorrect from_language",400
+            return {"error":"Incorrect from_language","msg_code":400} ,400
         if to_language not in SCRIPT_LANGUAGES:
-            return "Incorrect to_language",400
+            return  {"error":"Incorrect from_language","msg_code":400}, 400 
 
         try:
             transliterate_word=transliterate.process(from_language,to_language,sentence)
         except Exception as e:
-            return e,400
+            return  {"error":e,"msg_code":400},400 
         
-        return json.dumps({"input_words":from_language,"translitered_words":transliterate_word},ensure_ascii=False)
+        return json.dumps({"input_words":from_language,"transliterated_word":transliterate_word},ensure_ascii=False)
     else:
-        return "Not a json content",400
+        return  {"error":"Not a json content","msg_code":400} 
 
 @app.route("/")
 def health():
