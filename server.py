@@ -1,6 +1,7 @@
 import os
 import sys
-from flask import Flask, request
+import json
+from flask import Flask, request,jsonify
 from flask_cors import CORS, cross_origin
 from aksharamukha import transliterate
 from aksharamukha import GeneralMap
@@ -22,16 +23,14 @@ def get_language_code():
 def tranliterate():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
-        json = request.get_json()
-        from_language=json["from_language"]
-        to_language=json["to_language"]
-        sentence=json["sentence"]
+        json_data = request.get_json()
+        from_language=json_data["from_language"]
+        to_language=json_data["to_language"]
+        sentence=json_data["sentence"]
 
         if from_language not in SCRIPT_LANGUAGES:
-            print("Here")
             return "Incorrect from_language",400
         if to_language not in SCRIPT_LANGUAGES:
-            print("Here")
             return "Incorrect to_language",400
 
         try:
@@ -39,7 +38,7 @@ def tranliterate():
         except Exception as e:
             return e,400
         
-        return {"translitered":transliterate_word}
+        return json.dumps({"input_words":from_language,"translitered_words":transliterate_word},ensure_ascii=False)
     else:
         return "Not a json content",400
 
